@@ -60,4 +60,11 @@ Read in a SAS file.
 pulse_df = read_sas("./data/public_pulse_data.sas7bdat") #check back for update on how to do this- didn't work
 pulse_df
 ```
+## Exporting Data
+
+Export the mlb subtable
+
+```{r}
+write_csv(mlb_df, "./data/mlb_subtable.csv")
+```
 
