@@ -6,6 +6,8 @@ output: github_document
 ```{r setup}
 #option command i to insert a code chunk
 library(tidyverse)
+library(readxl) #read in excel
+library(haven) #read in SAS
 ```
 
 ## Read in some data
@@ -41,5 +43,21 @@ litters_df = read_csv("./data/FAS_litters.csv", skip = 10, col_names = F)
 litters_df = read_csv("./data/FAS_litters.csv", na = c("","NA",999)) #anytime it sees these three things will know it's supposed to be missing values
 
 #check out the ?read_csv() for more info
+```
+
+## Other file formats
+
+Read in an excel file.
+```{r}
+mlb_df = read_excel("./data/mlb11.xlsx") #use tab to auto complete
+mlb_df
+
+mlb_df_range = read_excel("./data/mlb11.xlsx", range = "A1:F7") #only certain cols
+```
+
+Read in a SAS file. 
+```{r, eval=FALSE}
+pulse_df = read_sas("./data/public_pulse_data.sas7bdat") #check back for update on how to do this- didn't work
+pulse_df
 ```
 
