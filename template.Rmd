@@ -19,3 +19,27 @@ litters_df = janitor::clean_names(litters_df) #special notation so you don't hav
 
 ## Take a look at the data
 
+Printing in the console
+```{r}
+litters_df
+```
+
+```{r}
+tail(litters_df)
+```
+
+```{r}
+skimr::skim(litters_df)
+
+#also View(litters_df) in console because it makes knitting difficult
+```
+
+## Options to read_csv
+```{r}
+litters_df = read_csv("./data/FAS_litters.csv", skip = 10, col_names = F)
+
+litters_df = read_csv("./data/FAS_litters.csv", na = c("","NA",999)) #anytime it sees these three things will know it's supposed to be missing values
+
+#check out the ?read_csv() for more info
+```
+
