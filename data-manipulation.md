@@ -358,3 +358,150 @@ mutate(
     ## 10 con8  #3/5/2/2/95           28.5        NA            20               8
     ## # … with 39 more rows, and 3 more variables: pups_dead_birth <dbl>,
     ## #   pups_survive <dbl>, wt_gain <dbl>
+
+## ‘arrange’
+
+``` r
+head(arrange(litters_df, group, pups_born_alive), 10)
+```
+
+    ## # A tibble: 10 × 8
+    ##    group litter_number   gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##    <chr> <chr>                <dbl>       <dbl>       <dbl>           <dbl>
+    ##  1 Con7  #85                   19.7        34.7          20               3
+    ##  2 Con7  #5/4/2/95/2           28.5        44.1          19               5
+    ##  3 Con7  #5/5/3/83/3-3         26          41.4          19               6
+    ##  4 Con7  #4/2/95/3-3           NA          NA            20               6
+    ##  5 Con7  #2/2/95/3-2           NA          NA            20               6
+    ##  6 Con7  #1/2/95/2             27          42            19               8
+    ##  7 Con7  #1/5/3/83/3-3/2       NA          NA            20               9
+    ##  8 Con8  #2/2/95/2             NA          NA            19               5
+    ##  9 Con8  #1/6/2/2/95-2         NA          NA            20               7
+    ## 10 Con8  #3/6/2/2/95-3         NA          NA            20               7
+    ## # … with 2 more variables: pups_dead_birth <dbl>, pups_survive <dbl>
+
+## ‘%&gt;%’
+
+``` r
+litters_data_raw = read_csv("./data/FAS_litters.csv",
+  col_types = "ccddiiii")
+litters_data_clean_names = janitor::clean_names(litters_data_raw)
+litters_data_selected_cols = select(litters_data_clean_names, -pups_survive)
+litters_data_with_vars = 
+  mutate(
+    litters_data_selected_cols, 
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group))
+litters_data_with_vars_without_missing = 
+  drop_na(litters_data_with_vars, wt_gain)
+litters_data_with_vars_without_missing
+```
+
+    ## # A tibble: 31 × 8
+    ##    group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##    <chr> <chr>              <dbl>       <dbl>       <int>           <int>
+    ##  1 con7  #85                 19.7        34.7          20               3
+    ##  2 con7  #1/2/95/2           27          42            19               8
+    ##  3 con7  #5/5/3/83/3-3       26          41.4          19               6
+    ##  4 con7  #5/4/2/95/2         28.5        44.1          19               5
+    ##  5 mod7  #59                 17          33.4          19               8
+    ##  6 mod7  #103                21.4        42.1          19               9
+    ##  7 mod7  #3/82/3-2           28          45.9          20               5
+    ##  8 mod7  #5/3/83/5-2         22.6        37            19               5
+    ##  9 mod7  #106                21.7        37.8          20               5
+    ## 10 mod7  #94/2               24.4        42.9          19               7
+    ## # … with 21 more rows, and 2 more variables: pups_dead_birth <int>,
+    ## #   wt_gain <dbl>
+
+``` r
+litters_data_clean = 
+  drop_na(
+    mutate(
+      select(
+        janitor::clean_names(
+          read_csv("./data/FAS_litters.csv", col_types = "ccddiiii")
+          ), 
+      -pups_survive
+      ),
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group)
+    ),
+  wt_gain
+  )
+
+litters_data_clean
+```
+
+    ## # A tibble: 31 × 8
+    ##    group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##    <chr> <chr>              <dbl>       <dbl>       <int>           <int>
+    ##  1 con7  #85                 19.7        34.7          20               3
+    ##  2 con7  #1/2/95/2           27          42            19               8
+    ##  3 con7  #5/5/3/83/3-3       26          41.4          19               6
+    ##  4 con7  #5/4/2/95/2         28.5        44.1          19               5
+    ##  5 mod7  #59                 17          33.4          19               8
+    ##  6 mod7  #103                21.4        42.1          19               9
+    ##  7 mod7  #3/82/3-2           28          45.9          20               5
+    ##  8 mod7  #5/3/83/5-2         22.6        37            19               5
+    ##  9 mod7  #106                21.7        37.8          20               5
+    ## 10 mod7  #94/2               24.4        42.9          19               7
+    ## # … with 21 more rows, and 2 more variables: pups_dead_birth <int>,
+    ## #   wt_gain <dbl>
+
+Both confusing. use piping instead (shift command m for pipe operator).
+
+``` r
+litters_data = 
+  read_csv("./data/FAS_litters.csv", col_types = "ccddiiii") %>% #shift command m for pipe operator
+  janitor::clean_names() %>%
+  select(-pups_survive) %>%
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group)) %>% 
+  drop_na(wt_gain)
+
+litters_data
+```
+
+    ## # A tibble: 31 × 8
+    ##    group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##    <chr> <chr>              <dbl>       <dbl>       <int>           <int>
+    ##  1 con7  #85                 19.7        34.7          20               3
+    ##  2 con7  #1/2/95/2           27          42            19               8
+    ##  3 con7  #5/5/3/83/3-3       26          41.4          19               6
+    ##  4 con7  #5/4/2/95/2         28.5        44.1          19               5
+    ##  5 mod7  #59                 17          33.4          19               8
+    ##  6 mod7  #103                21.4        42.1          19               9
+    ##  7 mod7  #3/82/3-2           28          45.9          20               5
+    ##  8 mod7  #5/3/83/5-2         22.6        37            19               5
+    ##  9 mod7  #106                21.7        37.8          20               5
+    ## 10 mod7  #94/2               24.4        42.9          19               7
+    ## # … with 21 more rows, and 2 more variables: pups_dead_birth <int>,
+    ## #   wt_gain <dbl>
+
+``` r
+#easier to read
+```
+
+``` r
+litters_data = 
+  read_csv("./data/FAS_litters.csv", col_types = "ccddiiii") %>%
+  janitor::clean_names(dat = .) %>%
+  select(.data = ., -pups_survive) %>%
+  mutate(.data = .,
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group)) %>% 
+  drop_na(data = ., wt_gain)
+```
+
+``` r
+litters_data %>%
+  lm(wt_gain ~ pups_born_alive, data = .) %>%
+  broom::tidy()
+```
+
+    ## # A tibble: 2 × 5
+    ##   term            estimate std.error statistic  p.value
+    ##   <chr>              <dbl>     <dbl>     <dbl>    <dbl>
+    ## 1 (Intercept)       13.1       1.27      10.3  3.39e-11
+    ## 2 pups_born_alive    0.605     0.173      3.49 1.55e- 3
