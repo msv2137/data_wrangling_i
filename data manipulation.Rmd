@@ -93,3 +93,14 @@ A very common filtering step requires you to omit missing observations. You can 
 * drop_na(litters_data) will remove any row with a missing value
 * drop_na(litters_data, wt_increase) will remove rows for which wt_increase is missing.
 
+## 'mutate'
+
+```{r}
+mutate(
+  litters_df,
+  wt_gain = gd18_weight - gd0_weight,
+  group = str_to_lower(group)
+)
+```
+
+
