@@ -1,0 +1,11 @@
+---
+title: "Data Manipulation"
+output: github_document
+---
+
+```{r setup}
+#option command i to insert a code chunk
+library(tidyverse)
+
+```
+
